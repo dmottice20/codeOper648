@@ -6,7 +6,7 @@ import numpy as np
 
 # Define decision epochs...
 N = 4
-T = np.arange(N-1)
+T = np.arange(N-1) # [0,1,2]
 
 # Define states...
 M = 8
@@ -58,8 +58,6 @@ for a in range(0,M):
     P[a] = np.zeros((cardS, cardS))
     r[a] = np.zeros((cardS, 1))
 
-
-
 for t in T:
     d[t] = np.zeros((cardS, 1))
 
@@ -100,3 +98,6 @@ while t > 0:
         a = max(A[s])
         d[t][s] = a
         u[t][s] = r[a][s] + np.matmul(P[a][s][:], u[t+1])
+
+print("==========POLICY VALUES==========")
+print(u)
