@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import pickle
 
 logging.basicConfig(filename='problem2.log', filemode='w',
                     format='%(asctime)s | %(message)s',
@@ -12,7 +13,7 @@ logging.basicConfig(filename='problem2.log', filemode='w',
 logging.info("=========INPUT=========")
 # Decision epochs
 N = 21
-T = np.arange(N + 1)
+T = np.arange(1, N+1)
 # Construct state space...
 S = np.arange(4, 10 + 1)
 # add a state = 11 that represents the delta 
@@ -44,13 +45,13 @@ for a in np.arange(0, 3 + 1):
 # Problem parameters...
 # Prob of predation.
 q = {
-    1: 0.0,
+    1: 0,
     2: 0.004,
     3: 0.020
 }
 # Prob of finding food.
 f = {
-    1: 0.0,
+    1: 0,
     2: 0.4,
     3: 0.6
 }
@@ -67,27 +68,37 @@ h = 1
 # state value and index.
 indx_offset = 4
 
-# Construct P and r
+# Construct P and r.
+# The use of continue is extremely bad practice -- I need to come back
+# and rework on properly defining this P matrix without the need for that
+# command.
 for s in S:
     for a in A[s]:
         for j in S:
             if s == 11:
                 if j == 11:
                     P[a][s - indx_offset, j - indx_offset] = 1
+                    continue
             if s in np.arange(4, 4 + h):
-                # Check if j = delta
+            # Check if j = delta
                 if j == 11:
                     P[a][s - indx_offset, j - indx_offset] = q[a] + (1 - q[a]) * (1 - f[a])
+                    continue
             if s in np.arange(4 + h, 10 + 1):
                 # Check if j = s-1
                 if j == s - 1:
+                    if a == 1:
+                        print(f"s={s} and j={j}")
                     P[a][s - indx_offset, j - indx_offset] = (1 - q[a]) * (1 - f[a])
+                    continue
                 if j == 11:
                     P[a][s - indx_offset, j - indx_offset] = q[a]
-            if s in S[:-1]:
+                    continue
+            if s in np.arange(4, 10+1):
                 # Check if j = min(s+g-h,10)
                 if j == min(s + g[a] - h, 10):
                     P[a][s - indx_offset, j - indx_offset] = (1 - q[a]) * f[a]
+                    continue
 
         r[a][s - indx_offset] = 0
 
@@ -109,7 +120,7 @@ for t in T:
 # Initialize U_star[n] = r_N(X_n)
 u_star[N] = np.vstack((np.ones((card_s - 1, 1)), np.asarray([0])))
 
-while t > 0:
+while t > 1:
     t -= 1
     u_star[t] = np.zeros((card_s, 1))
     # For s in S, compute u_t(s)
@@ -135,3 +146,12 @@ logging.info("---POLICY VALUES---")
 logging.info(f"The u_star is ...\n{u_star}")
 logging.info("---Policy Decision---")
 logging.info(f"The d_star is ...\n{d_star}")
+
+# Save the hash of matrices...
+f1 = open("data/problem2_u_star.pkl", "wb")
+pickle.dump(u_star, f1)
+f1.close()
+# Save the hash of reward vectors...
+f2 = open("data/problem2_d_star.pkl", "wb")
+pickle.dump(d_star, f2)
+f2.close()

@@ -12,8 +12,8 @@ logging.basicConfig(filename='problem1.log', filemode='w',
 ###############################################
 logging.info("=========INPUT=========")
 # Decision epochs...
-N = 3
-T = np.arange(N)
+N = 4
+T = np.arange(1, N+1)
 
 # State space...
 # List of possible states
@@ -83,7 +83,7 @@ for t in T:
 t = T[-1]
 u_star[t] = np.zeros((card_s, 1))
 
-while t > 0:
+while t > 1:
     t -= 1
     u_star[t] = np.zeros((card_s, 1))
     # For s in S, compute u_t(s)
