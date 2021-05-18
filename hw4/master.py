@@ -5,7 +5,7 @@ from vi import run_value_iteration
 #####################################################
 ##          Controls & Params                      ##
 #####################################################
-build_mdp = False
+build_mdp = True
 A = np.arange(1, 121+1)
 S = np.arange(1, 120+1)
 
@@ -17,6 +17,6 @@ with open("data/transition_matrix.npy", "rb") as f:
 with open("data/reward_vector.npy", "rb") as f:
     r = np.load(f)
 
-v_star, d_star, P_dstar, results_table = run_value_iteration(P, r, A, S, epsilon=0.01, lamb=0.99)
+v_star, d_star, P_dstar, results_table = run_value_iteration(P, r, A, S, epsilon=0.1, lamb=0.99)
 print("v_star is...\n", v_star)
 print("D_star is...\n", d_star)

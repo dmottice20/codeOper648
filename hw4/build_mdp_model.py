@@ -30,6 +30,26 @@ for s in S:
     for a in A:
         for j in S:
             # CONSTRUCT P Matrices.
+            if a == 1:
+                if s == 120:
+                    if j == 120:
+                        P[a-1][s-1, j-1] = 1
+                elif s == 119:
+                    if j == 120:
+                        P[a-1][s-1, j-1] = 1
+                else:
+                    if j == s + 1:
+                        P[a-1][s-1, j-1] = p[s-1]
+                    elif j == 120:
+                        P[a-1][s-1, j-1] = 1 - p[s-1]
+            elif a == 121:
+                if j == 120:
+                    P[a-1][s-1, j-1] = 1
+            else:
+                if j == a - 2 + 1:
+                    P[a-1][s-1, j-1] = 1 * p[a-2]
+                elif j == 120:
+                    P[a-1][s-1, j-1] = 1 * (1 - p[a-2])
 
         if a == 1:
             r[a-1, s-1] = -o[s-1]
