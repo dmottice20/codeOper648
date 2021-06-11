@@ -4,8 +4,8 @@ import timeit
 
 start = timeit.timeit()
 # Read in data
-file_name = os.path.join("data", "ARP_data.txt")
-data = np.loadtxt(file_name, delimiter=",")
+#file_name = os.path.join("data", "ARP_data.txt")
+data = np.loadtxt("ARP_data", delimiter=",")
 
 # Split columns into representing vectors.
 c, v, o, p = np.hsplit(data, 4)
@@ -39,9 +39,9 @@ for s in S:
                         P[a-1][s-1, j-1] = 1
                 else:
                     if j == s + 1:
-                        P[a-1][s-1, j-1] = p[s-1]
+                        P[a-1][s-1, j-1] = p[s]
                     elif j == 120:
-                        P[a-1][s-1, j-1] = 1 - p[s-1]
+                        P[a-1][s-1, j-1] = 1 - p[s]
             elif a == 121:
                 if j == 120:
                     P[a-1][s-1, j-1] = 1
@@ -52,9 +52,9 @@ for s in S:
                     P[a-1][s-1, j-1] = 1 * (1 - p[a-2])
 
         if a == 1:
-            r[a-1, s-1] = -o[s-1]
+            r[a-1, s-1] = -o[s]
         else:
-            r[a-1, s-1] = v[s-1] - c[a-2] - o[a-2]
+            r[a-1, s-1] = v[s] - c[a-2] - o[a-2]
 
 end = timeit.timeit()
 

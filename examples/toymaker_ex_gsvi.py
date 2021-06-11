@@ -41,13 +41,31 @@ conv_test = epsilon * (1 - lamb) / (2 * lamb)
 conv_val = np.inf
 
 n = 0
-max_iter = 500
+max_iter = 1500
 
 inRunResultsTable = np.zeros((max_iter, 2))
 
-while (conv_val >= conv_test) and (n < max_iter):
+while True:
+    n += 1
     v_n = v_np1.copy()
+    S = S[::-1]
     for s in S:
-        v_np1_sa_Best = -np.inf
-        for a in A[s]:
-            v_np1_sa = r[a][s] + lamb * np.matmul()
+        Q = [float(r[a][s] + lamb * P[a][s, :].dot(v_n)) for a in A[s]]
+        v_n[s] = max(Q)
+
+    conv_val = np.linalg.norm(v_np1 - v_n, np.inf)
+    if conv_val < conv_test:
+        print("EPSILON OPTIMAL")
+        break
+    elif n == max_iter:
+        print("Break due to max iterations reached.")
+        break
+
+policy = []
+for s in S:
+    Q = 0*A[s]
+    for a in A[s]:
+        Q[a] = (r[a][s] + lamb * P[a][s, :].dot(v_n))
+
+    v_n[s] = Q.max()
+    policy.append(int(Q.argmax()))
